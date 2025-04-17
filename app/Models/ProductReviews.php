@@ -19,4 +19,9 @@ class ProductReviews extends Model
     return $this->belongsTo(Products::class, 'product_id');
 }
 
+public function customer()
+{
+    return $this->belongsTo(Customers::class, 'customer_id');
+}
+
 }

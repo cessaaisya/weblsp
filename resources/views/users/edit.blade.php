@@ -265,7 +265,7 @@
                      </div>
                      <div class="mb-3 ms-3 me-3">
                       <label for="roles" class="form-label">Roles</label>
-                      <select class="form-select" aria-label="Default select example" id="roles" name="roles" >
+                      <select class="form-control" aria-label="Default select example" id="roles" name="roles" >
                         <!-- <option selected>Chose your roles</option> -->
                         <option value="admin">Admin</option>
                         <option value="owner">Owner</option>

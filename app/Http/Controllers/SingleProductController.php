@@ -16,6 +16,7 @@ class SingleproductController extends Controller
     public function show($id)
     {
         try {
+            
             // Ambil produk berdasarkan ID
             $product = Products::findOrFail($id);
 
@@ -39,6 +40,13 @@ class SingleproductController extends Controller
         } catch (ModelNotFoundException $e) {
             abort(404); // Produk tidak ditemukan, kembalikan respons 404
         }
+        $product = Products::with('reviews')->find($id);
+
+        if (!$product) {
+            return redirect('/products')->with('error', 'Product not found.');
+        }
+    
+        return view('singleproduct', ['product' => $product]);
     }
 
     public function submitReview(Request $request, $id)
@@ -60,4 +68,5 @@ class SingleproductController extends Controller
         // Redirect kembali ke halaman produk dengan pesan sukses atau melakukan tindakan lainnya
         return redirect()->back()->with('success', 'Review submitted successfully.');
     }
+
 }

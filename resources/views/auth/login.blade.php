@@ -64,10 +64,6 @@
             Don't have account yet?
             <a href="{{ route('register') }}">Register here</a>
         </div>
-        <div class="link">
-            Are you a customer and want to continue shop?
-            <a href="{{ route('login.login') }}">Login here</a>
-        </div>
     </form>
                         </div>
                     </div>

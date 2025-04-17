@@ -26,6 +26,11 @@ class CartController extends Controller
      */
     public function addToCart(Request $request)
     {
+        // Periksa apakah pengguna sudah login
+        if (Auth::guest()) {
+            // Jika pengguna belum login, arahkan ke halaman login
+            return redirect()->route('login');}
+            
         $productId = $request->input('product_id');
         $product = Products::find($productId);
         $userId = auth()->id();
@@ -74,14 +79,12 @@ class CartController extends Controller
     
         return redirect()->route('cart.index')->with('success', 'Product added to cart successfully!');
     }
+
     
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
-    }
+    
 
     /**
      * Display the specified resource.

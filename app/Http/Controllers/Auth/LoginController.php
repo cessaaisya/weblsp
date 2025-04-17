@@ -35,9 +35,9 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             if (Auth::user()->roles === 'admin' || Auth::user()->roles === 'owner') {
                 if ($request->session()->has('url.intended')) {
-                    return redirect()->intended('/dashboard');
+                    return redirect()->intended('/');
                 }
-                return redirect('/dashboard');
+                return redirect('/');
             } else {
                 return redirect('/');
             }

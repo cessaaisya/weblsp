@@ -145,6 +145,12 @@
                     <i class="fas fa-fw fa-clipboard"></i>
                     <span>Wishlist</span></a>
             </li>
+            <!-- Nav Item - suppliers -->
+            <li class="nav-item">
+                <a class="nav-link" href="suppliers">
+                    <i class="fas fa-fw fa-clipboard"></i>
+                    <span>Suppliers</span></a>
+            </li>
 
 
             <!-- Divider -->

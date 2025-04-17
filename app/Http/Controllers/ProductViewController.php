@@ -21,6 +21,15 @@ class ProductViewController extends Controller
         ]);
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $products = Products::where('product_name', 'like', "%$query%")
+                           ->orWhere('description', 'like', "%$query%")
+                           ->get();
+
+        return view('productview.index', compact('products'));
+    }
     /**
      * Show the form for creating a new resource.
      *

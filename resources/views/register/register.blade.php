@@ -103,6 +103,10 @@
             Common User?
             <a href="/">Enter Home Page</a>
         </div>
+        <div class="link">
+            Are you an admin?
+            <a href="{{ route('register') }}">Login here</a>
+        </div>
     </form>
                         </div>
                     </div>
