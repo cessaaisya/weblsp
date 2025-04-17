@@ -50,8 +50,20 @@ class Products extends Model
     {
         return $this->hasMany(ProductReviews::class);
 }
+    public function carts(){
+        return $this->hasMany(Cart::class);
+    }
 
     public function discounts(){
         return $this->hasMany(Discounts::class, 'product_id');
+    }
+
+    public function getDiscountedPrice()
+    {
+        if ($this->discounts->isNotEmpty()) {
+            $discount = $this->discounts->first();
+            return $this->price - ($this->price * $discount->percentage / 100);
+        }
+        return $this->price;
     }
 }

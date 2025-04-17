@@ -12,6 +12,7 @@ class WishlistslpController extends Controller
 {
     public function index(Request $request)
 {
+
     // Ambil data produk dari wishlist pengguna yang saat ini login
     $wishlistProducts = Wishlists::where('customer_id', Auth::id())
         ->with('products') // Pastikan untuk mengambil data produk yang terkait dengan setiap wishlist
@@ -39,8 +40,8 @@ class WishlistslpController extends Controller
 
     // Kirimkan total harga diskon ke view
     return view('wishlistslp.index', compact('wishlistProducts', 'wishlistCount', 'totalDiscountedPrice'));
-}
 
+}
 
 public function addToWishlist(Request $request)
 {
@@ -86,6 +87,20 @@ public function destroy($id)
     } else {
         return redirect()->route('wishlist-product.index')->with('error', 'You are not authorized to delete this item.');
     }
+}
+
+public function hapuswishlistslp($id)
+{
+    // Temukan dan hapus item wishlist berdasarkan ID
+    $wishlistItem = Wishlists::findOrFail($id);
+
+    // Pastikan item wishlist milik pengguna yang saat ini login
+    if ($wishlistItem->customer_id === Auth::id()) {
+        $wishlistItem->delete();
+        return redirect()->route('wishlistslp.index')->with('success', 'Product Berhasil Dihapus dari Wishlist');
+    } else {
+        return redirect()->route('wishlistslp.index')->with('error', 'You are not authorized to delete this item.');
+}
 }
 
 }

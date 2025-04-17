@@ -67,12 +67,8 @@
                 </div><br>
             <button type="submit" class="btn btn-primary">Register</button>
             <div class="link">
-            Already have acocunt?
+            Already have account?
             <a href="{{ route('register') }}">Login here</a>
-        </div>
-        <div class="link">
-            Are you a customer and want to register to shop?
-            <a href="{{ route('register.register') }}">Register here</a>
         </div>
          </form>
                             

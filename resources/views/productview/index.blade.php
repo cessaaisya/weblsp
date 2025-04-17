@@ -1,10 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<style>
+    <style>
         .nav-item a {
             color: white;
         }
+        .product-buttons {
+            display: flex;
+            justify-content: center; /* Pusatkan tombol secara horisontal */
+            gap: 10px; /* Jarak antar tombol */
+            margin-top: 10px; /* Jarak atas ke tombol */
+        }
+        .product-img-container {
+            text-align: center; /* Memastikan gambar di tengah */
+        }
+        .card-img-top {
+            width: 300px;
+            height: 250px;
+            object-fit: cover; /* Mengisi kotak gambar tanpa merusak rasio aspek */
+        }
+        .search-form-container {
+    display: flex;
+    justify-content: right;
+    margin-top: 10px; /* Tambahkan jarak atas untuk estetika */
+}
+
+.search-form-container .form-control {
+    width: 150px;
+}
+
     </style>
     <!-- Font Awesome icons (free version)-->
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -40,15 +64,16 @@
             <a class="navbar-brand text-uppercase fw-bold d-lg-none" href="index.html">Start Bootstrap</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mx-auto">
-                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="index.html">Home</a></li>
-                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="about.html">About</a></li>
+                <ul class="navbar-nav mx-auto">
+                <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="/">Home</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="/productrevlp">Review</a></li>
                         <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="/productview">Products</a></li>
                         <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="/wishlistslp">Wishlist</a></li>
                         <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="/login">Login</a></li>
                         <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="/register">Register</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="/dashboard">DB</a></li>
                         <!-- Tambahkan ikon keranjang di sini -->
-                        <li class="nav-item">
+                    <li class="nav-item">
                         <a class="nav-link" href="/cart" id="cartIcon">
                             <i class="bi-cart-fill"></i>
                             Cart
@@ -56,55 +81,41 @@
                         </a>
                     </li>
                     <!-- Akhir dari penambahan ikon keranjang -->
-                    <li class="nav-item">
-                    <!-- Search Bar
-                        <form class="d-flex" id="searchForm">
-                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="searchInput">
+                    <li class="nav-item px-lg-4">
+                        <a class="dropdown-item" href="#">
+                            @if(Auth::check())
+                                <p>{{ Auth::User()->name }} - Customer</p>
+                            @else
+                                <p>Guest</p>
+                            @endif        
+                        </a>
+                    </li>
+                    <li>
+                        <form action="{{ route('logoutcustomer') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="dropdown-item text-white">Logout</button>
                         </form>
-                    </li> -->
+                    </li>
                 </ul>
-                <!-- Sidebar list barang -->
-                <div id="sidebar" class="sidebar">
-                    <ul id="cartItemList" class="cart-item-list">
-                        <!-- List barang akan ditambahkan di sini secara dinamis menggunakan JavaScript -->
-                    </ul>
-                </div>
-                <!-- Tambahkan tombol untuk mengurangi jumlah barang -->
-                <!-- <li class="nav-item">
-                    <button class="btn btn-danger" id="removeFromCartBtn">
-                        <i class="bi bi-dash"></i>
-                    </button>
-                </li> -->
-                        <li class="nav-item px-lg-4"><a class="dropdown-item" href="#">
-                        @if(Auth::check())
-                            <p>{{ Auth::User()->name }} - Customer</p>
-                        @else
-                            <p>Guest</p>
-                        @endif        
-                        
-                        
-                            </a>
-                            <li>
-                                                <form action="{{ route('logout') }}" method="POST">
-                                                    @csrf
-                                                    <button type="submit" class="dropdown-item text-white">Logout</button>
-                                                </form>
-                                            </li>
-</li>
-                    </ul>
             </div>
         </div>
     </nav>
-    
+    <section class="search-form-container">
+    <form class="d-flex" action="{{ route('search') }}" method="GET">
+        <input class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-light" type="submit">Search</button>
+    </form>
+</section>
+<br>
     <div class="container">
         @if ($products->isNotEmpty())
         <div class="row">
             @foreach($products as $product)
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card h-100">
-                    <a href="/single-product/{{ $product->id }}">
+                    <a href="/singleproduct/{{ $product->id }}">
                         <div class="product-img-container">
-                            <img class="card-img-top" style="width: 300px; height: 250px;" src="{{ asset('storage/' . $product->image1_url) }}" alt="{{ $product->product_name }}">
+                            <img class="card-img-top" src="{{ asset('storage/' . $product->image1_url) }}" alt="{{ $product->product_name }}">
                         </div>
                     </a>
                     <div class="card-body">
@@ -126,35 +137,31 @@
                         <!-- End Logic For Displaying Discount Price -->
 
                         <!-- The Buttons in The Card -->
-                        <a class="btn btn-success" href="https://wa.me/6281292284572" role="button">
-                            Chat Seller
-                        </a>
-                        <a class="btn btn-primary" href="/formcustomer" role="button">
-                            Buy Product
-                        </a> <br>
-                        <div class="d-inline-block">
-                            <form method="post" action="{{ route('add-to-wishlist') }}">
-                                @csrf
-                                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                <button type="submit" class="btn btn-danger">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </form>
-                        </div>
-                        <div class="d-inline-block">
-                            <!-- Tombol tambah ke keranjang -->
-                            <form action="{{ route('cart.addToCart', $product->id) }}" method="POST" class="me-2">
-                                            @csrf
-                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                            <button type="submit" class="btn btn-warning">
-                                                <i class="bi bi-cart-fill"></i> 
-                                            </button>
-                               </form>
-                        </div>
-                        <div class="d-inline-block">
-                            <a href="{{ route('singleproduct.show', ['id' => $product->id]) }}" class="btn btn-info">
-                                <i class="bi bi-eye"></i>
-                            </a>
+                        <div class="product-buttons">
+                            <div class="d-inline-block">
+                                <form method="post" action="{{ route('add-to-wishlist') }}">
+                                    @csrf
+                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="d-inline-block">
+                                <!-- Tombol tambah ke keranjang -->
+                                <form action="{{ route('cart.addToCart', $product->id) }}" method="POST" class="me-2">
+                                    @csrf
+                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                    <button type="submit" class="btn btn-warning">
+                                        <i class="bi bi-cart-fill"></i> 
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="d-inline-block">
+                                <a href="{{ route('singleproduct.show', ['id' => $product->id]) }}" class="btn btn-info">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -288,28 +295,28 @@
         });
     </script>
 
-<script>
-    const searchForm = document.getElementById('searchForm');
-    const searchInput = document.getElementById('searchInput');
+    <script>
+        const searchForm = document.getElementById('searchForm');
+        const searchInput = document.getElementById('searchInput');
 
-    searchInput.addEventListener('input', function() {
-        const query = this.value.trim();
-        if (query.length > 0) {
-            // Send search request to server
-            fetch(/search?q=${query})
-                .then(response => response.json())
-                .then(data => {
-                    // Handle search results, for example, display them in a dropdown
-                    console.log('Search results:', data);
-                })
-                .catch(error => {
-                    console.error('Error fetching search results:', error);
-                });
-        } else {
-            // Clear search results or hide them
-            console.log('Search query is empty');
-        }
- });
-</script>
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            if (query.length > 0) {
+                // Send search request to server
+                fetch(/search?q=${query})
+                    .then(response => response.json())
+                    .then(data => {
+                        // Handle search results, for example, display them in a dropdown
+                        console.log('Search results:', data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching search results:', error);
+                    });
+            } else {
+                // Clear search results or hide them
+                console.log('Search query is empty');
+            }
+        });
+    </script>
 </body>
 </html>

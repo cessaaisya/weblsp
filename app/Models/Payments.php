@@ -14,4 +14,14 @@ class Payments extends Model
         'payment_method',
         'amount',
     ];
+
+    public function order()
+    {
+        return $this->belongsTo(Orders::class);
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customers::class, 'customer_id');
+    }
 }

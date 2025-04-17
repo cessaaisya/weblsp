@@ -5,6 +5,9 @@
         #whislist {
             background-color: #f5f5dc; /* Warna coklat muda */
         }
+        .nav-item a {
+            color: white;
+        }
     </style>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -15,6 +18,8 @@
         <!-- Google fonts-->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i" rel="stylesheet" />
+        <!-- Bootstrap icons-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
     </head>
@@ -31,15 +36,38 @@
                 <a class="navbar-brand text-uppercase fw-bold d-lg-none" href="index.html">Start Bootstrap</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mx-auto">
-                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="index.html">Home</a></li>
-                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="about.html">About</a></li>
-                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="products.html">Products</a></li>
-                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="store.html">Store</a></li>
-                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="/dashboard">Dashboard</a></li>
-                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="/login">Login</a></li>
-                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="/register">Register</a></li>
-                    </ul>
+                <ul class="navbar-nav mx-auto">
+                <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="/">Home</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="/productrevlp">Review</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="/productview">Products</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="/wishlistslp">Wishlist</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="/customer/login">Login</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="/customer/register">Register</a></li>
+                        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="/dashboard">DB</a></li>
+                        <!-- Tambahkan ikon keranjang di sini -->
+                        <li class="nav-item">
+                        <a class="nav-link" href="/cart" id="cartIcon">
+                            <i class="bi-cart-fill"></i>
+                            Cart
+                            <!-- <span class="badge bg-light text-black ms-1 rounded-pill" id="cartItemCount">0</span> -->
+                        </a>
+                    </li>
+                    <!-- Akhir dari penambahan ikon keranjang -->
+                        <li class="nav-item px-lg-4"><a class="dropdown-item" href="#">
+                        @if(Auth::check())
+                            <p>{{ Auth::User()->name }} - Customer</p>
+                        @else
+                            <p>Guest</p>
+                        @endif        
+                            </a>
+                            <li>
+                                                <form action="{{ route('logoutcustomer') }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="dropdown-item text-white">Logout</button>
+                                                </form>
+                                            </li>
+                                        </li>
+                                    </ul>
                 </div>
             </div>
         </nav>
@@ -47,8 +75,7 @@
         <section class="page-section" id="wishlist">
             <div class="container">
                 <div class="text-center">
-                    <h2 class="section-heading text-uppercase">WishList</h2>
-                    <h3 class="section-subheading text-muted">Berikut adalah Product Favorite Oleh pelanggan yang pernah berkunjung atau menggunakan website ini.</h3>
+                    <h2 class="section-heading text-uppercase" style="color: white;">Your WishList</h2>
                 </div>
                 <table class="table table-hover table-bordered table-stripped" id="whislist">
                 <thead>
@@ -57,6 +84,7 @@
                         <th>Nama Product</th>
                         <th>Image</th>
                         <th>Price</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,7 +100,28 @@
                                     <span>No Image</span>
                                 @endif
                             </td>
-                            <td>{{ $wishlistProduct->products->price ?? 'Price Not Found' }}</td>
+                            <td>
+                                <!-- The Logic For Displaying Discount Price -->
+                        <!-- We use the number_format() function to format the prices with 2 decimal places. -->
+                        <p class="card-text">
+                            @if ($wishlistProduct->products->discounts->isNotEmpty())
+                                @foreach ($wishlistProduct->products->discounts as $discount)
+                                    <span class="badge bg-danger">{{ $discount->percentage }}% Off</span>
+                                    <del class="text-muted">Rp{{ number_format($wishlistProduct->products->price, 0) }}</del>
+                                    <span class="discounted-price">Rp{{ number_format($wishlistProduct->products->price - ($wishlistProduct->products->price * $discount->percentage / 100), 0) }}</span>
+                                @endforeach
+                            @else
+                                <span class="price">Rp{{ number_format($wishlistProduct->products->price, 0) }}</span>
+                            @endif
+                        </p>
+                        <!-- End Logic For Displaying Discount Price -->
+                            </td>
+                            <td> <a href="/hapuswishlistslp/{{$wishlistProduct->id}}" class="btn btn-danger btn btn-outline-primar btn-sm">Remove</a>
+                            <div class="d-inline-block">
+                            <a href="{{ route('singleproduct.show', ['id' => $wishlistProduct->products->id]) }}" class="btn btn-info">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </div></td>
                         </tr>
                     @endforeach
                 </tbody>
